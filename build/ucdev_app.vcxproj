@@ -22,12 +22,11 @@
     <RootNamespace>ucdev_app</RootNamespace>
     <AppContainerApplication>true</AppContainerApplication>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformMinVersion>10.0.18362.0</WindowsTargetPlatformMinVersion>
     <ApplicationType>Windows Store</ApplicationType>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
-    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <TargetRuntime>Native</TargetRuntime>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <WindowsTargetPlatformMinVersion>10.0.17134.0</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="..\msbuild\gsl.props" />

@@ -218,11 +218,9 @@
     <ClInclude Include="..\..\..\..\include\uc_dev\lip\item_pointers.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(AssImpDirectory)\bin\x64\assimp-vc140-mt-d.dll" />
-    <None Include="$(AssImpDirectory)\bin\x64\assimp-vc140-mt.dll" />
-    <None Include="$(AssImpDirectory)\bin\x86\assimp-vc140-mt-d.dll" />
-    <None Include="$(AssImpDirectory)\bin\x86\assimp-vc140-mt.dll" />
     <None Include="packages.config" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
   </ItemGroup>
