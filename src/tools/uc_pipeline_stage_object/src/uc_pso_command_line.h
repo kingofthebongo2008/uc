@@ -15,8 +15,8 @@ namespace uc
     {
         inline std::string get_abs_path(const std::string& file_name)
         {
-            namespace fs = std::experimental::filesystem;
-            return fs::canonical(fs::absolute( fs::path(file_name) ) ).string();
+            namespace fs = std::filesystem;
+            return fs::absolute( fs::path(file_name) ) .string();
         }
 
         inline auto get_input_value(const boost::program_options::variables_map & map, const std::string& s)
