@@ -197,7 +197,7 @@ namespace uc
                 }
 
                 //camera view
-               // m_camera_view->render(graphics.get());
+                m_camera_view->render(graphics.get());
 
                 end_render(ctx, graphics.get());
 
@@ -283,6 +283,12 @@ namespace uc
                 }
 
                 return std::make_unique<graphics_compute_submitable>(std::move(graphics));
+            }
+
+            void render_world_non_linear_moment_shadow_maps_64::do_update(update_context* ctx)
+            {
+                base::do_update(ctx);
+                m_camera_view->update(ctx);
             }
             
         }

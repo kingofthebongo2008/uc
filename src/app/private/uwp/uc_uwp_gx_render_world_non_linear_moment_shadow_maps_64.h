@@ -34,6 +34,7 @@ namespace uc
 
                 std::unique_ptr< submitable >do_render(render_context* ctx) override;
                 std::unique_ptr< submitable >do_render_shadows(shadow_render_context* ctx) override;
+                void do_update(update_context* ctx) override;
 
                 std::unique_ptr<gx::blue_noise::ldr_rg01_64x64> m_blue_noise;
 

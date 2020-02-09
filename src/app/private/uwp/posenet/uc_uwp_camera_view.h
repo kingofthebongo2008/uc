@@ -17,6 +17,7 @@ namespace uc
     {
         namespace gxu
         {
+            struct update_context;
             struct initialize_context;
 
             class camera_view : public util::noncopyable
@@ -26,6 +27,7 @@ namespace uc
 
                 camera_view(initialize_context* c);
                 void render(gx::dx12::gpu_graphics_command_context* ctx);
+                void update(update_context* ctx);
 
                 private:
 

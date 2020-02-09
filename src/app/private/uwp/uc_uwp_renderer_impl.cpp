@@ -449,7 +449,7 @@ namespace uc
                 ctx.m_back_buffer_size.m_height         = static_cast<uint16_t>(height);
 
                 ctx.m_front_buffer_size.m_width         = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->width());
-                ctx.m_front_buffer_size.m_height        =  static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->height());
+                ctx.m_front_buffer_size.m_height        = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->height());
                 ctx.m_back_buffer_scaled_size.m_width   = static_cast<uint16_t>(width);
                 ctx.m_back_buffer_scaled_size.m_height  = static_cast<uint16_t>(height);
                 pending_depth = std::move(m_render_world_manager->render_depth(&ctx));

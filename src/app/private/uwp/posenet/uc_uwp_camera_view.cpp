@@ -42,6 +42,11 @@ namespace uc
                 graphics->set_pso(m_pso);
                 graphics->draw(4);
             }
+
+            void camera_view::update(update_context* ctx)
+            {
+                ctx;
+            }
         }
     }
 }
