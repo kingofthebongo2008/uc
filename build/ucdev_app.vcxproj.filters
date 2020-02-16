@@ -1385,5 +1385,6 @@
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
   </ItemGroup>
 </Project>

@@ -9,27 +9,56 @@
 
 #include <autogen/shaders/camera_view_graphics.h>
 
+#include <winrt/Windows.Media.h>
+#include <winrt/Windows.Media.Capture.h>
+#include <winrt/Windows.Media.Capture.Frames.h>
+#include <future>
+
 namespace uc
 {
     namespace uwp
     {
         namespace gxu
         {
-            namespace render_graph
+            namespace
             {
-                struct executor
+                std::future<void> capture_camera()
                 {
-                    void begin_command_list() {}
-                    void end_command_list() {}
+                    MediaCapture capture;
 
-                    void begin_execute() {}
-                    void begin_end() {}
-                };
+                    auto groups = co_await Frames::MediaFrameSourceGroup::FindAllAsync();
+
+                    for (auto&& group : groups)
+                    {
+                        auto infos = group.SourceInfos();
+
+                        for (auto&& info : infos)
+                        {
+                            if (info.SourceKind() == Frames::MediaFrameSourceKind::Color)
+                            {
+                                MediaCaptureInitializationSettings settings;
+
+                                settings.SourceGroup() = group;
+                                settings.SharingMode(MediaCaptureSharingMode::SharedReadOnly);
+                                settings.MemoryPreference(MediaCaptureMemoryPreference::Cpu);
+                                settings.StreamingCaptureMode(StreamingCaptureMode::Video);
+
+                                co_await capture.InitializeAsync(settings);
+                                break;
+                                
+                            }
+                        }
+                    }
+
+                    co_return;
+                }
             }
 
             camera_view::camera_view(initialize_context* resources)
             {
                 m_pso = gx::dx12::create_pso(resources->m_resources->device_d2d12(), resources->m_resources->resource_create_context(), gx::dx12::camera_view_graphics::create_pso);
+
+                capture_camera();
             }
 
             void camera_view::render(gx::dx12::gpu_graphics_command_context* graphics)
@@ -45,7 +74,7 @@ namespace uc
 
             void camera_view::update(update_context* ctx)
             {
-                ctx;
+                ctx;//
             }
         }
     }

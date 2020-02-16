@@ -3,6 +3,13 @@
 
 #include <autogen/shaders/camera_view_graphics.h>
 
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
+
+#include <winrt/Windows.Media.h>
+#include <winrt/Windows.Media.Capture.h>
+#include <winrt/Windows.Media.Capture.Frames.h>
+
 namespace uc
 {
     namespace gx
@@ -19,6 +26,9 @@ namespace uc
         {
             struct update_context;
             struct initialize_context;
+
+            using namespace winrt::Windows::Foundation;
+            using namespace winrt::Windows::Media::Capture;
 
             class camera_view : public util::noncopyable
             {

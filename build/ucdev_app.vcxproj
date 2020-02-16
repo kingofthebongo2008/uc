@@ -108,8 +108,8 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <DisableSpecificWarnings>4702</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <CompileAsWinRT>true</CompileAsWinRT>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalOptions>/Wv:18 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -138,8 +138,8 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <DisableSpecificWarnings>4702</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <CompileAsWinRT>true</CompileAsWinRT>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalOptions>/Wv:18 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
