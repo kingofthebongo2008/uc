@@ -10,6 +10,7 @@
 #include <winrt/Windows.Media.Capture.h>
 #include <winrt/Windows.Media.Capture.Frames.h>
 
+
 namespace uc
 {
     namespace gx
@@ -42,6 +43,19 @@ namespace uc
                 private:
 
                 gx::dx12::camera_view_graphics::graphics_pipeline_state* m_pso;
+
+                MediaCapture                                             m_media_capture;
+                Frames::MediaFrameReader                                 m_frame_reader;
+                Frames::MediaFrameReader::FrameArrived_revoker           m_revoker;
+                
+                public:
+
+                void on_frame_arrived(const winrt::Windows::Foundation::IInspectable&, const Frames::MediaFrameArrivedEventArgs& args);
+                //void set_frame_arrived(Frames::MediaFrameReader::FrameArrived_revoker&& v);
+
+                void set_frame_arrived(const Frames::MediaFrameReader& v);
+                void set_media_frame_reader(const Frames::MediaFrameReader& v);
+                void set_media_capture(const MediaCapture& v);
             };
         }
     }

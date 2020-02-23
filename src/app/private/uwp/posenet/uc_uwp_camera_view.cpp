@@ -22,7 +22,7 @@ namespace uc
         {
             namespace
             {
-                std::future<void> capture_camera()
+                std::future<void> capture_camera(camera_view* view)
                 {
                     MediaCapture capture;
 
@@ -44,8 +44,19 @@ namespace uc
                                 settings.StreamingCaptureMode(StreamingCaptureMode::Video);
 
                                 co_await capture.InitializeAsync(settings);
+
+                                auto source = capture.FrameSources().First();
+                                auto reader = co_await capture.CreateFrameReaderAsync(source.Current().Value());
+                                auto status = co_await reader.StartAsync();
+
+                                if (status == Frames::MediaFrameReaderStartStatus::Success )
+                                {
+                                    view->set_media_capture(capture);
+                                    view->set_frame_arrived(reader);
+                                    view->set_media_frame_reader(reader);
+                                }
+
                                 break;
-                                
                             }
                         }
                     }
@@ -54,11 +65,28 @@ namespace uc
                 }
             }
 
-            camera_view::camera_view(initialize_context* resources)
+            void camera_view::set_media_capture(const MediaCapture& v)
+            {
+                m_media_capture = v;
+            }
+
+            void camera_view::set_media_frame_reader(const Frames::MediaFrameReader& v )
+            {
+                m_frame_reader = v;
+            }
+
+            //void camera_view::set_frame_arrived(Frames::MediaFrameReader::FrameArrived_revoker&& v)
+            void camera_view::set_frame_arrived(const Frames::MediaFrameReader& reader)
+            {
+                Frames::MediaFrameReader r = reader;
+                m_revoker = r.FrameArrived(winrt::auto_revoke, { this, &camera_view::on_frame_arrived });
+            }
+
+            camera_view::camera_view(initialize_context* resources) : m_frame_reader(nullptr)
             {
                 m_pso = gx::dx12::create_pso(resources->m_resources->device_d2d12(), resources->m_resources->resource_create_context(), gx::dx12::camera_view_graphics::create_pso);
 
-                capture_camera();
+                capture_camera(this);
             }
 
             void camera_view::render(gx::dx12::gpu_graphics_command_context* graphics)
@@ -75,6 +103,11 @@ namespace uc
             void camera_view::update(update_context* ctx)
             {
                 ctx;//
+            }
+
+            void camera_view::on_frame_arrived(const winrt::Windows::Foundation::IInspectable&, const Frames::MediaFrameArrivedEventArgs& )
+            {
+                //__debugbreak();
             }
         }
     }
