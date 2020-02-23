@@ -13,6 +13,8 @@
 #include <winrt/Windows.Media.Capture.h>
 #include <winrt/Windows.Media.Capture.Frames.h>
 #include <future>
+#include <ppltasks.h>
+#include <pplawait.h>
 
 namespace uc
 {
@@ -22,70 +24,93 @@ namespace uc
         {
             namespace
             {
-                std::future<void> capture_camera(camera_view* view)
+                concurrency::task<void> capture_camera(camera_view* view)
                 {
-                    MediaCapture capture;
-
-                    auto groups = co_await Frames::MediaFrameSourceGroup::FindAllAsync();
-
-                    for (auto&& group : groups)
+                    try
                     {
-                        auto infos = group.SourceInfos();
+                        auto groups = co_await Frames::MediaFrameSourceGroup::FindAllAsync();
 
-                        for (auto&& info : infos)
+                        std::vector<Frames::MediaFrameSourceGroup> g;
+                        bool found = false;
+
+                        for (auto&& group : groups)
                         {
-                            if (info.SourceKind() == Frames::MediaFrameSourceKind::Color)
+                            auto infos = group.SourceInfos();
+
+                            for (auto&& info : infos)
                             {
-                                MediaCaptureInitializationSettings settings;
-
-                                settings.SourceGroup() = group;
-                                settings.SharingMode(MediaCaptureSharingMode::SharedReadOnly);
-                                settings.MemoryPreference(MediaCaptureMemoryPreference::Cpu);
-                                settings.StreamingCaptureMode(StreamingCaptureMode::Video);
-
-                                co_await capture.InitializeAsync(settings);
-
-                                auto source = capture.FrameSources().First();
-                                auto reader = co_await capture.CreateFrameReaderAsync(source.Current().Value());
-                                auto status = co_await reader.StartAsync();
-
-                                if (status == Frames::MediaFrameReaderStartStatus::Success )
+                                if (info.SourceKind() == Frames::MediaFrameSourceKind::Color)
                                 {
-                                    view->set_media_capture(capture);
-                                    view->set_frame_arrived(reader);
-                                    view->set_media_frame_reader(reader);
-                                }
+                                    found = true;
+                                    g.push_back(group);
+                                    break;
 
+                                }
+                            }
+
+                            if (found)
+                            {
                                 break;
                             }
                         }
-                    }
 
-                    co_return;
+
+                        if (!g.empty())
+                        {
+                            MediaCaptureInitializationSettings settings;
+
+                            settings.SourceGroup() = *g.begin();
+                            settings.SharingMode(MediaCaptureSharingMode::SharedReadOnly);
+                            settings.MemoryPreference(MediaCaptureMemoryPreference::Cpu);
+                            settings.StreamingCaptureMode(StreamingCaptureMode::Video);
+
+                            MediaCapture capture;
+
+                            co_await capture.InitializeAsync(settings);
+
+                            auto source = capture.FrameSources().First();
+                            auto reader = co_await capture.CreateFrameReaderAsync(source.Current().Value());
+                            auto status = co_await reader.StartAsync();
+
+                            if (status == Frames::MediaFrameReaderStartStatus::Success)
+                            {
+                                view->set_media_parameters(capture, reader);
+                            }
+
+                        }
+
+                    }
+                    catch (...)
+                    {
+                        __debugbreak();
+                    }
                 }
             }
 
-            void camera_view::set_media_capture(const MediaCapture& v)
+            
+            void camera_view::set_media_parameters(const MediaCapture& capture, const Frames::MediaFrameReader& reader)
             {
-                m_media_capture = v;
-            }
+                std::unique_lock  lock(m_lock);
 
-            void camera_view::set_media_frame_reader(const Frames::MediaFrameReader& v )
-            {
-                m_frame_reader = v;
-            }
+                m_media_capture = capture;
+                m_frame_reader  = reader;
 
-            //void camera_view::set_frame_arrived(Frames::MediaFrameReader::FrameArrived_revoker&& v)
-            void camera_view::set_frame_arrived(const Frames::MediaFrameReader& reader)
-            {
-                Frames::MediaFrameReader r = reader;
-                m_revoker = r.FrameArrived(winrt::auto_revoke, { this, &camera_view::on_frame_arrived });
+                if (m_revoker)
+                {
+                    m_revoker.revoke();
+                }
+
+                m_revoker       = m_frame_reader.FrameArrived(winrt::auto_revoke, { this, &camera_view::on_frame_arrived });
             }
 
             camera_view::camera_view(initialize_context* resources) : m_frame_reader(nullptr)
             {
                 m_pso = gx::dx12::create_pso(resources->m_resources->device_d2d12(), resources->m_resources->resource_create_context(), gx::dx12::camera_view_graphics::create_pso);
 
+            }
+
+            void camera_view::initialize()
+            {
                 capture_camera(this);
             }
 
@@ -107,6 +132,13 @@ namespace uc
 
             void camera_view::on_frame_arrived(const winrt::Windows::Foundation::IInspectable&, const Frames::MediaFrameArrivedEventArgs& )
             {
+				if (Frames::MediaFrameReference frame = m_frame_reader.TryAcquireLatestFrame())
+				{
+                    std::lock_guard<std::shared_mutex> lock(m_lock);
+                    m_frame_data.m_frame = frame;
+                    m_frame_data.m_index = m_frame_index++;
+				}
+
                 //__debugbreak();
             }
         }

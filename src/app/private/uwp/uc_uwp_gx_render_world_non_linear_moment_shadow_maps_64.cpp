@@ -90,6 +90,7 @@ namespace uc
                 g.run([this, c]
                 {
                     m_camera_view = std::make_unique<camera_view>(c);
+                    m_camera_view->initialize();
                 });
 
                 g.wait();
