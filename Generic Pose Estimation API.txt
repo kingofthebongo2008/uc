@@ -1,0 +1,27 @@
+provide an image in the form of: byte array reference or GPU texture reference; with specifier of reference type
+
+Set a flag for the preferred processor to use when procesing the pose estimation (GPU, CPU, or NPU) - this will fallback to CPU if GPU or NPU fails.
+
+Request pose data from the provided image, and get back a struct similar to:
+struct Joints
+{
+	Vector3 LeftFoot;
+	Vector3 LeftKnee;
+	Vector3 LeftHip;
+	Vector3 RightFoot;
+	Vector3 RightKnee;
+	Vector3 RightHip;
+	Vector3 SpineLower
+	Vector3 SpineMiddle
+	Vector3 SpineTop;
+	Vector3 Neck;
+	Vector3 Head;
+	Vector3 RightShoulder;
+	Vector3 RightElbow;
+	Vector3 RightWrist;
+	Vector3 RightHand;
+	Vector3 LeftShoulder;
+	Vector3 LeftElbow;
+	Vector3 LeftWrist;
+	Vector3 LeftHand;
+}
