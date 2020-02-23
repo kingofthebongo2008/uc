@@ -3,7 +3,6 @@
 
 #include <uc_dev/gx/dx12/cmd/base_command_context.h>
 #include <uc_dev/gx/dx12/cmd/memcpy.h>
-#include <pix3.h>
 
 namespace uc
 {

@@ -11,7 +11,7 @@
 #include <uc_dev/gx/dx12/api/dxgi_helpers.h>
 #include <uc_dev/gx/dx12/api/helpers.h>
 #include <uc_dev/gx/dx12/gpu/fence_value.h>
-#include <pix3.h>
+#include <pix.h>
 
 
 namespace uc

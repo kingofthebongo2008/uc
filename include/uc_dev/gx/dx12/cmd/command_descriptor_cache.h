@@ -2,7 +2,6 @@
 
 
 #include <uc_dev/gx/dx12/gpu/resource_create_context.h>
-#include <pix3.h>
 
 
 namespace uc
